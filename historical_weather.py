@@ -84,6 +84,7 @@ def get_historical_weather_by_city(city, lat, lon):
 
     return weather_df
 
+
 def get_weather(code):
     '''
     Преобразует числовой код погоды в текстовое описание.
@@ -132,7 +133,6 @@ def get_weather(code):
         return 'Не найдено'
 
 
-
 def preprocess_weather_data(weather_df):
 
     if weather_df is None:
@@ -157,6 +157,7 @@ def get_supabase_client():
     supabase = create_client(project_url, api_key)
     return supabase
 
+
 def check_data_in_database(city, date):
     """
     Проверяеv, есть ли данные в базе данных для города за определенную дату
@@ -175,6 +176,7 @@ def check_data_in_database(city, date):
     except Exception as e:
         print(f"Ошибка при проверке данных в БД: {e}")
         return False
+
 
 def load_weather_data_to_database(df):
 
@@ -204,3 +206,4 @@ weather_df_perm = preprocess_weather_data(weather_df_perm)
 
 load_weather_data_to_database(weather_df_ekb)
 load_weather_data_to_database(weather_df_perm)
+
