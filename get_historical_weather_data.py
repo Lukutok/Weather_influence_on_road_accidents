@@ -1,9 +1,10 @@
+import os
 import pandas as pd
 import requests
 import time
 import datetime 
 import json
-from supabase import create_client, Client
+from supabase import create_client 
 
 def get_open_meteo_data(city, lat, lon, start_date, end_date):
 
@@ -143,17 +144,25 @@ def preprocess_weather_data(weather_df):
         weather_df = weather_df.rename(columns={'time': 'datetime'})
         weather_df['datetime'] = pd.to_datetime(weather_df['datetime'])
         return weather_df
+        
+
+def get_supabase_client():
+    '''
+    Получение клиента 
+    '''
+    
+    project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
+    api_key = os.getenv('API_KEY')
+    
+    supabase = create_client(project_url, api_key)
+    return supabase
 
 def check_data_in_database(city, date):
     """
-    Проверяет, есть ли данные в базе данных для города за определенную дату
+    Проверяеv, есть ли данные в базе данных для города за определенную дату
     """
-
-    project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
-    api_key = ...
+    supabase = get_supabase_client()
     
-    supabase: Client = create_client(project_url, api_key)
-
     try:
         response = (supabase.table('weather')
                             .select('city', count='exact', head=True)
@@ -174,10 +183,7 @@ def load_weather_data_to_database(df):
         return
 
     else:
-        project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
-        api_key = ...
-    
-        supabase: Client = create_client(project_url, api_key)
+        supabase = get_supabase_client()
     
         json_string = df.to_json(orient='records', date_format='iso')
         data_to_insert = json.loads(json_string)
