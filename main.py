@@ -1,3 +1,11 @@
+import pandas as pd
+import datetime 
+import json
+from import check_data_in_database
+from import get_open_meteo_data
+from import preprocess_weather_data
+from import load_weather_data_to_database
+
 if __name__ == "__main__":
     
     yesterday = datetime.date.today() - datetime.timedelta(days=1)
