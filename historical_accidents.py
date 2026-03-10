@@ -99,6 +99,10 @@ def get_dtp_by_city(region_id, district_id, region, city):
 
 
 def normalization_table(dtp_info):
+    ''' 
+    Разкладываем колонку dtp_info исходного датафрейма dtp на 3 датафрейма.
+    В итоге получаем датафрейм с информацией о локации проишествия, транспортных средствах и участниках. 
+    '''
 
     info_data, vehicles, participants = [], [], []
 
@@ -135,7 +139,14 @@ def update_dict(row):
     
     return row['infoDtp']
 
+
+
 def rename_columns_dtp(dtp, dtp_info, vehicles, participants):
+
+    ''' 
+    Изменение названий колонок датафреймов.
+    Данные названия колонок совпадают с названиями полей в базе данных
+    '''
     
     dtp = dtp.rename(columns={
         'KartId': 'dtp_id',
@@ -207,6 +218,9 @@ def rename_columns_dtp(dtp, dtp_info, vehicles, participants):
 
 
 def preprocess_dtp(dtp):
+    ''' 
+    Предобработка датафрейма с общими сведениями о ДТП
+    '''
     
     dtp = dtp.astype({
         'death_count': 'int',
@@ -226,6 +240,9 @@ def preprocess_dtp(dtp):
 
 
 def preprocess_dtp_info(dtp_info):
+    ''' 
+    Предобработка датафрейма с информацией о локации ДТП
+    '''
     
     dtp_info = dtp_info.astype({
         'lat': 'float',
@@ -244,6 +261,9 @@ def preprocess_dtp_info(dtp_info):
 
 
 def preprocess_dtp_vehicles(vehicles):
+    ''' 
+    Предобработка датафрейма с транспортными средствами
+    '''
     
     vehicles['vehicles_num'] = vehicles['vehicles_num'].astype('int')
 
@@ -258,6 +278,9 @@ def preprocess_dtp_vehicles(vehicles):
 
 
 def preprocess_dtp_participants(participants):
+    ''' 
+    Предобработка датафрейма с участниками ДТП
+    '''
     
     participants = participants.astype({
         'participant_num': 'int'})
@@ -274,6 +297,9 @@ def preprocess_dtp_participants(participants):
 
 
 def prepare_data_for_database(dtp_data):
+    ''' 
+    Предобработка всех четырех датафреймов 
+    '''
     
     dtp_data['infoDtp'] = dtp_data.apply(update_dict, axis=1)
     
@@ -292,8 +318,12 @@ def prepare_data_for_database(dtp_data):
 
 def load_dtp_data_to_database(df, table_name):
 
+    '''
+    Выгрузка данных в базу данных, исходя из названия таблицы
+    '''
+
     project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
-    api_key = ...
+    api_key = os.getenv('API_KEY')
 
     supabase = create_client(project_url, api_key)
 
@@ -307,6 +337,8 @@ def load_dtp_data_to_database(df, table_name):
     except Exception as e:
         print(f"Ошибка: {e}")
 
+
+# Выгрузка данных по городам Екатеринбург и Пермь, предобработка и их загрузка в базу данных. 
 
 dtp_data_ekb = get_dtp_by_city('65', '654011', 'Свердловская область', 'Екатеринбург')
 dtp, dtp_info, vehicles, participants = prepare_data_for_database(dtp_data_ekb)
@@ -322,8 +354,4 @@ load_dtp_data_to_database(dtp, 'dtp')
 load_dtp_data_to_database(dtp_info, 'dtp_info')
 load_dtp_data_to_database(vehicles, 'vehicles')
 load_dtp_data_to_database(participants, 'participants')
-
-
-
-
 
