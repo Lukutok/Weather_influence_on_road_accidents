@@ -1,10 +1,7 @@
 import pandas as pd
 import datetime 
 import json
-from import check_data_in_database
-from import get_open_meteo_data
-from import preprocess_weather_data
-from import load_weather_data_to_database
+from historical_weather import check_data_in_database, get_open_meteo_data, preprocess_weather_data, load_weather_data_to_database
 
 if __name__ == "__main__":
     
@@ -12,10 +9,10 @@ if __name__ == "__main__":
 
     cities = [{'name': 'Екатеринбург', 'lat': 56.8389, 'lon': 60.6057}, 
               {'name': 'Пермь', 'lat': 58.0109, 'lon': 56.2319}]
+    
     weather_data = []
 
     for city in cities:
-        print(f'Проверяем {city['name']}')
         
         if check_data_in_database(city['name'], yesterday):
             print(f'Данные за {yesterday} для города {city['name']} уже в базе')
@@ -31,4 +28,4 @@ if __name__ == "__main__":
         weather_data = pd.concat(weather_data, ignore_index=True)
         load_weather_data_to_database(weather_data)
     else:
-        print('Данных нет')
+        print('Данных для выгрузки нет')
