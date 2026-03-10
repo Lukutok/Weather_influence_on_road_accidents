@@ -100,7 +100,7 @@ def get_dtp_by_city(region_id, district_id, region, city):
 
 def normalization_table(dtp_info):
     ''' 
-    Разкладываем колонку dtp_info исходного датафрейма dtp на 3 датафрейма.
+    Раcкладываем колонку dtp_info исходного датафрейма dtp на 3 датафрейма.
     В итоге получаем датафрейм с информацией о локации проишествия, транспортных средствах и участниках. 
     '''
 
@@ -354,4 +354,5 @@ load_dtp_data_to_database(dtp, 'dtp')
 load_dtp_data_to_database(dtp_info, 'dtp_info')
 load_dtp_data_to_database(vehicles, 'vehicles')
 load_dtp_data_to_database(participants, 'participants')
+
 
