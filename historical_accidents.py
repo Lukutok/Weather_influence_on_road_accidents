@@ -5,6 +5,7 @@ import time
 import numpy as np
 import datetime
 from supabase import create_client
+import os
 
 def get_dtp_cards(region_id, district_id, year, month, start=1, end=10000):
     
@@ -321,6 +322,7 @@ load_dtp_data_to_database(dtp, 'dtp')
 load_dtp_data_to_database(dtp_info, 'dtp_info')
 load_dtp_data_to_database(vehicles, 'vehicles')
 load_dtp_data_to_database(participants, 'participants')
+
 
 
 
