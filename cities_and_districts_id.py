@@ -17,7 +17,7 @@ def load_data_to_database(df, table_name):
     '''
     
     project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
-    api_key = ///
+    api_key = os.getenv('API_KEY')
     
     supabase = create_client(project_url, api_key)
     
@@ -50,7 +50,7 @@ def get_coordinates(city_name):
 # ссылка на википедию с таблицей городов 
 url = 'https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%BE%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8'
 
-# Загружаем данные всех городов с википедии
+# Собираем список всех городов РФ
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
@@ -229,3 +229,4 @@ districts = districts[~districts['district_id'].isna()]
 
 # Загрузка данных
 load_data_to_database(districts, 'districts_id')
+
