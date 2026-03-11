@@ -5,6 +5,11 @@
 
 **Период сбора данных**: 2015-2026 гг
 
+**Стек**:
+- Python: requests, pandas, supabase, json, numpy, datetime
+- Supabase: PostgreSQL
+- BI система: Power BI
+
 ## 1. Сбор данных
 Первым этапом через Open-Meteo API (Historical Weather API) собираем погодные почасовые данные для выбранных городов.
 
