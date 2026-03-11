@@ -9,8 +9,12 @@ import logging
 import sys
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
+import os
 
 def load_data_to_database(df, table_name):
+    '''
+    Получение клиента и загрузка данных в базу данных
+    '''
     
     project_url = 'https://lpdaqqydnpvynwymzxxt.supabase.co'
     api_key = ///
@@ -27,11 +31,26 @@ def load_data_to_database(df, table_name):
     except Exception as e:
         print(f"Ошибка: {e}")
 
+
+def get_coordinates(city_name):
+    '''
+    Добавляет широту и долготу локациям
+    '''
+    try:
+        # Добавляем ", Россия", чтобы не найти одноименный город в другой стране
+        location = geocode(city_name + ", Россия")
+        
+        if location:
+            return location.latitude, location.longitude
+        return None, None
+    except:
+        return None, None
+        
+
 # ссылка на википедию с таблицей городов 
 url = 'https://ru.wikipedia.org/wiki/%D0%A1%D0%BF%D0%B8%D1%81%D0%BE%D0%BA_%D0%B3%D0%BE%D1%80%D0%BE%D0%B4%D0%BE%D0%B2_%D0%A0%D0%BE%D1%81%D1%81%D0%B8%D0%B8'
 
-
-
+# Загружаем данные всех городов с википедии
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
 }
@@ -48,25 +67,14 @@ else:
     print("Ошибка доступа к сайту:", response.status_code)
 
 
+# Добавляем к городам колонки с широтой и долготой
 geolocator = Nominatim(user_agent="my_geo_app_123")
-
 geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-
-def get_coordinates(city_name):
-    try:
-        # Добавляем ", Россия", чтобы не найти одноименный город в другой стране
-        location = geocode(city_name + ", Россия")
-        
-        if location:
-            return location.latitude, location.longitude
-        return None, None
-    except:
-        return None, None
-
 
 df['coords'] = df['Город'].apply(get_coordinates)
 df[['lat', 'lon']] = pd.DataFrame(df['coords'].tolist(), index=df.index)
 
+# Предобработка данных таблицы
 df = df[['Город', 'Регион', 'Федеральный округ', 'Население', 'lat', 'lon']]
 df = df.rename(columns={'Город': 'city', 'Регион': 'region', 'Федеральный округ': 'federal_district', 'Население': 'population'})
 
@@ -74,12 +82,12 @@ df['population'] = df['population'].str.replace(r'\[.*', '', regex=True)
 df['population'] = df['population'].str.replace(' ', '')
 df['population'] = df['population'].astype('int')
 df = df.where(pd.notnull(df), None)
+
+# Загрузка данных
 load_data_to_database(df, 'cities')
 
-'''
-Получение ОКАТО код с сайта ГИБДД в формате json 
-'''
 
+# Получение ОКАТО код с сайта ГИБДД в формате json 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -195,21 +203,19 @@ if __name__ == "__main__":
 
 districts_id = pd.read_json('regions_all.json')
 
-# ШАГ 1: Explode
-# Разворачиваем список в строки. Индексы продублируются.
+# Разворачиваем список в строки
 df_exploded = districts_id.explode('districts')
 
 # Сбрасываем индекс, чтобы потом корректно склеить колонки
 df_exploded = df_exploded.reset_index(drop=True)
 
-# ШАГ 2: Превращаем словари в колонки
-# pd.json_normalize делает из колонки со словарями красивую таблицу
+# Превращаем словари в колонки
 normalized_data = pd.json_normalize(df_exploded['districts'])
 
-# ШАГ 3: Объединяем старые данные с новыми
-# Удаляем старую колонку 'uchInfo' и приклеиваем новые
+# Объединяем старые данные с новыми
 districts = pd.concat([df_exploded.drop(columns=['districts']), normalized_data], axis=1)
 
+# Предобработка данных
 districts.columns = ['region_id', 'region', 'district_id', 'district']
 
 districts['district'] = (districts['district'].str.replace('г.', '')
@@ -219,7 +225,7 @@ districts['district'] = (districts['district'].str.replace('г.', '')
                          .str.strip())
 
 districts['region_id'] = districts['region_id'].astype('str')
-
 districts = districts[~districts['district_id'].isna()]
 
+# Загрузка данных
 load_data_to_database(districts, 'districts_id')
