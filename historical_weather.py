@@ -201,7 +201,7 @@ def load_weather_data_to_database(df):
 
 if __name__ == "__main__":
     
-''' Загружаем данные по городам в базу данных'''
+    ''' Загружаем данные по городам в базу данных'''
     
     cities = [{'name': 'Екатеринбург', 'lat': 56.8389, 'lon': 60.6057},
               {'name': 'Пермь', 'lat': 58.0109, 'lon': 56.2319}]
@@ -210,4 +210,5 @@ if __name__ == "__main__":
         weather_df = get_historical_weather_by_city(city['name'], city['lat'], city['lon'])
         weather_df = preprocess_weather_data(weather_df)
         load_weather_data_to_database(weather_df)
+
 
