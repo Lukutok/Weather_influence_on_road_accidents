@@ -198,12 +198,16 @@ def load_weather_data_to_database(df):
             print(f"Ошибка: {e}")
 
 
-weather_df_ekb = get_historical_weather_by_city('Екатеринбург', 56.8389, 60.6057)
-weather_df_perm = get_historical_weather_by_city('Пермь', 58.0109, 56.2319)
 
-weather_df_ekb = preprocess_weather_data(weather_df_ekb)
-weather_df_perm = preprocess_weather_data(weather_df_perm)
+if __name__ == "__main__":
+    
+''' Загружаем данные по городам в базу данных'''
+    
+    cities = [{'name': 'Екатеринбург', 'lat': 56.8389, 'lon': 60.6057},
+              {'name': 'Пермь', 'lat': 58.0109, 'lon': 56.2319}]
 
-load_weather_data_to_database(weather_df_ekb)
-load_weather_data_to_database(weather_df_perm)
+    for city in cities:
+        weather_df = get_historical_weather_by_city(city['name'], city['lat'], city['lon'])
+        weather_df = preprocess_weather_data(weather_df)
+        load_weather_data_to_database(weather_df)
 
