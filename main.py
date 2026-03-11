@@ -1,6 +1,5 @@
 import pandas as pd
 import datetime 
-import json
 from historical_weather import check_data_in_database, get_open_meteo_data, preprocess_weather_data, load_weather_data_to_database
 
 if __name__ == "__main__":
