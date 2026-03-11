@@ -6,7 +6,7 @@
 **Период сбора данных**: 2015 г. по настоящее время.
 
 **Стек**:
-- Python: requests, pandas, supabase, json, numpy, datetime
+- Python: requests, pandas, supabase, json, numpy, datetime, Nominatim
 - Supabase: PostgreSQL
 - BI система: Power BI
 
