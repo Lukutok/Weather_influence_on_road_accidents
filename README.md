@@ -14,7 +14,7 @@
 
 ## 2. Работа с базой данных 
 Для всех данных создаем таблицы на Supabase и выгружаем туда всю имеющуюся информацию.
-Описание таблиц базы данных [database](https://github.com/Lukutok/Weather_influence_on_road_accidents/blob/main/database.md)
+Схема базы данных [database](https://github.com/Lukutok/Weather_influence_on_road_accidents/blob/main/database.md/ "схема БД")
 
 ## 3. Обновление данных
 Каждый день через GitGub actions происходит добавление погодных данных за предыдущий день на Supabase
