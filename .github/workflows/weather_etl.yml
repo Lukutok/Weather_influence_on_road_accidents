@@ -2,10 +2,10 @@ name: Everyday weather
 
 on:
   schedule:
-    # '53 9 * * *' - это 11:05 UTC
+    # Екб UTC +5
     - cron: '5 10 * * *'
   workflow_dispatch:
-    # Оставляем пустым для возможности ручного запуска
+    # для возможности ручного запуска
 
 jobs:
   run-weather-script:
