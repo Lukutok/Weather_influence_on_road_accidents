@@ -15,7 +15,7 @@ if __name__ == "__main__":
     for city in cities:
         
         if check_data_in_database(city['name'], yesterday):
-            print(f'Данные за {yesterday} для города {city['name']} уже в базе')
+            print(f"Данные за {yesterday} для города {city['name']} уже в базе")
             
         else:            
             weather_by_city = get_open_meteo_data(city['name'], city['lat'], city['lon'], yesterday, yesterday)
